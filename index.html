@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo Web Speech</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<header>
+<h1>Echo Web Speech</h1>
+
+<select id="modeSelect">
+<option value="system">Sistema</option>
+<option value="light">Claro</option>
+<option value="dark">Escuro</option>
+</select>
+
+<label>
+<input type="checkbox" id="audioOnly">
+Modo Somente Áudio
+</label>
+</header>
+
+<main>
+<h2 id="dayTitle"></h2>
+
+<div id="card">
+<div id="chinese"></div>
+<div id="br"></div>
+<div id="pt"></div>
+</div>
+
+<button onclick="speak()">▶ Ouvir</button>
+<button onclick="listen()">🎤 Falar</button>
+
+<div id="result"></div>
+
+<button onclick="next()">Próxima</button>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
