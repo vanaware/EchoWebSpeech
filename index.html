@@ -3,25 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Echo Web Speech</title>
+<title>EchoWebSpeech</title>
+
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
 </head>
+
 <body>
 
 <header>
-<h1>Echo Web Speech</h1>
-
-<select id="modeSelect">
-<option value="system">Sistema</option>
-<option value="light">Claro</option>
-<option value="dark">Escuro</option>
-</select>
-
-<label>
-<input type="checkbox" id="audioOnly">
-Modo Somente Áudio
-</label>
+<h1>EchoWebSpeech</h1>
 </header>
 
 <main>
@@ -33,12 +26,14 @@ Modo Somente Áudio
 <div id="pt"></div>
 </div>
 
+<div class="buttons">
 <button onclick="speak()">▶ Ouvir</button>
 <button onclick="listen()">🎤 Falar</button>
+<button onclick="next()">Próxima</button>
+</div>
 
 <div id="result"></div>
 
-<button onclick="next()">Próxima</button>
 </main>
 
 <script src="app.js"></script>

@@ -1,22 +1,86 @@
 body {
-font-family: Arial, sans-serif;
-text-align: center;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+margin: 0;
 padding: 20px;
-transition: 0.3s;
+text-align: center;
+transition: background 0.3s ease, color 0.3s ease;
 }
 
-.dark {
-background: #111;
-color: white;
+header {
+margin-bottom: 20px;
+}
+
+h1 {
+margin: 0;
+font-size: 28px;
 }
 
 #card {
-font-size: 28px;
-margin: 20px 0;
+margin: 30px 0;
+}
+
+#chinese {
+font-size: 40px;
+margin-bottom: 10px;
+}
+
+#br {
+font-size: 18px;
+opacity: 0.8;
+margin-bottom: 5px;
+}
+
+#pt {
+font-size: 18px;
+font-weight: 500;
+}
+
+.buttons {
+margin-top: 20px;
 }
 
 button {
-padding: 10px 20px;
-margin: 10px;
+padding: 12px 20px;
+margin: 8px;
 font-size: 16px;
+border-radius: 8px;
+border: none;
+cursor: pointer;
+transition: transform 0.1s ease;
+}
+
+button:active {
+transform: scale(0.96);
+}
+
+#result {
+margin-top: 25px;
+font-size: 20px;
+font-weight: bold;
+}
+
+/* 🌞 Light Mode */
+@media (prefers-color-scheme: light) {
+body {
+background-color: #ffffff;
+color: #111111;
+}
+
+button {
+background-color: #f0f0f0;
+color: #111111;
+}
+}
+
+/* 🌙 Dark Mode */
+@media (prefers-color-scheme: dark) {
+body {
+background-color: #111111;
+color: #ffffff;
+}
+
+button {
+background-color: #222222;
+color: #ffffff;
+}
 }
