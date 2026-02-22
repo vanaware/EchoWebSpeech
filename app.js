@@ -251,7 +251,8 @@ function speak(text) {
   speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = "zh-TW";
-  utter.rate = 0.9;
+  const rateValue = parseFloat(document.getElementById("rate").value);
+  utter.rate = rateValue;
   speechSynthesis.speak(utter);
 }
 
@@ -338,3 +339,24 @@ function evaluate(spoken) {
 
 // ==============================
 loadDB();
+
+// ==============================
+// RATE CONTROL
+// ==============================
+const rateInput = document.getElementById("rate");
+const rateValue = document.getElementById("rate-value");
+
+// Restaurar valor salvo ou usar padrão 1.0
+const savedRate = localStorage.getItem("speechRate");
+if (savedRate) {
+  rateInput.value = savedRate;
+  rateValue.innerText = parseFloat(savedRate).toFixed(1) + "x";
+} else {
+  rateValue.innerText = "1.0x";
+}
+
+rateInput.addEventListener("input", (e) => {
+  const value = parseFloat(e.target.value).toFixed(1);
+  rateValue.innerText = value + "x";
+  localStorage.setItem("speechRate", e.target.value);
+});

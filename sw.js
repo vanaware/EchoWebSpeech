@@ -1,4 +1,4 @@
-const CACHE_NAME = "cache-v1.0.1";
+const CACHE_NAME = "cache-v1.0.3";
 
 const ASSETS = [
   "./",
@@ -6,6 +6,10 @@ const ASSETS = [
   "./app.js",
   "./data.json",
   "./manifest.json",
+  "./icon-16.png",
+  "./icon-32.png",
+  "./apple-touch-icon.png",
+  "./favicon.ico",
   "./icon-192.png",
   "./icon-512.png"
 ];

@@ -189,3 +189,6 @@ Depois:
 ---
 
 Desenvolvido com Web Speech API.
+
+Icon from: [fonts.google.com](https://fonts.google.com/icons?selected=Material+Icons:interpreter_mode:&icon.query=speech&icon.size=24&icon.color=%2348752C)
+
