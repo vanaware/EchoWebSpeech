@@ -398,6 +398,104 @@ footer svg {
     gap: 12px;
   }
 }
+
+#pt-mode-input,
+#free-mode-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 18px;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+#pt-mode-input:focus,
+#free-mode-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 5px 20px rgba(37, 99, 235, 0.2);
+}
+
+#pt-mode-input::placeholder,
+#free-mode-input::placeholder {
+  color: rgba(0,0,0,0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  #pt-mode-input::placeholder,
+  #free-mode-input::placeholder {
+    color: rgba(255,255,255,0.3);
+  }
+}
+
+#translation-container {
+  width: 100%;
+  max-width: 520px;
+  display: none;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#translate-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+#translate-btn:hover {
+  opacity: 0.85;
+}
+
+#translate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#free-mode-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 18px;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+#free-mode-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 5px 20px rgba(37, 99, 235, 0.2);
+}
+
+#free-mode-input::placeholder {
+  color: rgba(0,0,0,0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  #free-mode-input::placeholder {
+    color: rgba(255,255,255,0.3);
+  }
+}
   </style>
 </head>
 
@@ -414,7 +512,12 @@ footer svg {
 
   <!-- Sidebar com lista de frases -->
   <aside class="sidebar" id="sidebar">
-    <h2>Dia <span id="sidebarDay">1</span></h2>
+    <div class="sidebar-list" style="margin-bottom: 12px;">
+      <div id="free-mode-btn" class="sidebar-item" style="cursor: pointer; display: none;">
+        Modo Livre
+      </div>
+    </div>
+    <h2><span id="sidebarDay">Modo Livre</span></h2>
     <ul class="sidebar-list" id="phraseList"></ul>
     
     <div class="sidebar-divider"></div>
@@ -448,6 +551,13 @@ footer svg {
         </svg>
       </button>
     </div>
+
+    <!-- Modo Livre (Dia 0) -->
+    <div id="translation-container">
+      <input type="text" id="pt-mode-input" placeholder="Escreva em português..." />
+      <button id="translate-btn">Traduzir</button>
+    </div>
+    <input type="text" id="free-mode-input" placeholder="Escreva a palavra em chinês..." />
 
     <!-- Card Principal -->
     <div id="card">
