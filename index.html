@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EchoWebSpeech</title>
+  <title>Echo Web Speech</title>
 
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
@@ -21,7 +21,7 @@
         --bg: #111111;
         --card: #1e1e1e;
         --text: #ffffff;
-        --accent: #3b82f6;
+        --accent: #2a2a2a;
       }
     }
 
@@ -107,18 +107,56 @@
       display: flex;
       gap: 15px;
     }
+
+    .controls button {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls button:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+button.record {
+  color: #c62828; /* vermelho elegante */
+  border: 1px solid rgba(198,40,40,0.3);
+}
+
+button.record:hover {
+  background: rgba(198,40,40,0.08);
+}
   </style>
 </head>
 
 <body>
 
-  <h1>EchoWebSpeech</h1>
+  <h1>Echo Web Speech</h1>
 
   <!-- Navegação de Dia -->
   <div class="day-nav">
-    <button id="prevDay">⏮️</button>
+    <button id="prevDay" aria-label="Dia anterior">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="11 17 6 12 11 7"></polyline>
+        <line x1="18" y1="17" x2="13" y2="12"></line>
+        <line x1="18" y1="7" x2="13" y2="12"></line>
+      </svg>
+    </button>
+
     <span id="dayTitle"></span>
-    <button id="nextDay">⏭️</button>
+
+    <button id="nextDay" aria-label="Próximo dia">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="13 7 18 12 13 17"></polyline>
+        <line x1="6" y1="7" x2="11" y2="12"></line>
+        <line x1="6" y1="17" x2="11" y2="12"></line>
+      </svg>
+    </button>
   </div>
 
   <!-- Card Principal -->
@@ -131,14 +169,32 @@
 
   <!-- Navegação de Frase -->
   <div class="phrase-nav">
-    <button id="prevPhrase">⬅️</button>
-    <button id="nextPhrase">➡️</button>
+    <button id="prevPhrase" aria-label="Frase anterior">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <button id="nextPhrase" aria-label="Próxima frase">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
   </div>
 
   <!-- Controles -->
   <div class="controls">
-    <button id="playBtn">🔊 Ouvir</button>
-    <button id="recBtn">🎤 Falar</button>
+    <button id="playBtn" aria-label="Ouvir">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+        <polygon points="8,5 19,12 8,19"></polygon>
+      </svg>
+    </button>
+
+    <button id="recBtn" class="record" aria-label="Falar">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+        <circle cx="12" cy="12" r="8"></circle>
+      </svg>
+    </button>
   </div>
 
   <div id="feedback"></div>
