@@ -1,161 +1,212 @@
-let data = [];
-let index = 0;
+// ==============================
+// ESTADO GLOBAL
+// ==============================
+let db = [];
+let dias = [];
+let dIndex = 0;
+let fIndex = 0;
 
-// Carregar base de dados externa
-fetch("data.json")
-.then(res => res.json())
-.then(json => {
-    data = json;
-    load();
-})
-.catch(err => {
-    console.error("Erro ao carregar data.json:", err);
-});
+// ==============================
+// CARREGAR BASE
+// ==============================
+async function loadDB() {
+  try {
+    const res = await fetch("data.json");
+    db = await res.json();
 
-// Carregar palavra atual
-function load() {
-    if (!data.length) return;
+    dias = [...new Set(db.map(item => item.d))].sort((a, b) => a - b);
 
-    let item = data[index];
-
-    document.getElementById("dayTitle").innerText = "Dia " + item.d;
-    document.getElementById("chinese").innerText = item.t;
-    document.getElementById("br").innerText = item.br;
-    document.getElementById("pt").innerText = item.pt;
-    document.getElementById("result").innerHTML = "";
+    loadState();
+    render();
+  } catch (err) {
+    console.error("Erro ao carregar base:", err);
+  }
 }
 
-// 🔊 Falar palavra (Mandarim Taiwan)
-function speak() {
-    if (!data.length) return;
-
-    let utter = new SpeechSynthesisUtterance(data[index].t);
-    utter.lang = "zh-TW";
-    utter.rate = 0.9; // ligeiramente mais lento para treino
-    speechSynthesis.speak(utter);
+// ==============================
+// UTIL
+// ==============================
+function getFrasesDoDia() {
+  const diaAtual = dias[dIndex];
+  return db.filter(item => item.d === diaAtual);
 }
 
-// 🎤 Reconhecimento de voz
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-let recognition;
-
-if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = "zh-TW";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onresult = function(event) {
-        let spoken = event.results[0][0].transcript;
-        let confidence = event.results[0][0].confidence || 0;
-
-        evaluate(spoken, confidence);
-    };
-
-    recognition.onerror = function(event) {
-        document.getElementById("result").innerHTML =
-            "Erro no reconhecimento: " + event.error;
-    };
-
-} else {
-    console.warn("SpeechRecognition não suportado neste navegador.");
+function clearFeedback() {
+  document.getElementById("feedback").innerText = "";
 }
 
-// Iniciar escuta
-function listen() {
-    if (!recognition) {
-        alert("Reconhecimento de voz não suportado neste navegador.");
-        return;
-    }
-
-    recognition.start();
+// ==============================
+// SAVE / LOAD
+// ==============================
+function saveState() {
+  localStorage.setItem("echo_state", JSON.stringify({
+    dIndex,
+    fIndex
+  }));
 }
 
-// 📊 Avaliar pronúncia
-function evaluate(spokenText, confidence) {
-
-    let spoken = normalize(spokenText);
-    let expected = normalize(data[index].p);
-
-    let scoreSimilarity = similarity(spoken, expected);
-    let scoreConfidence = confidence * 100;
-
-    // Combinação ponderada (70% similaridade + 30% confiança)
-    let finalScore = Math.round(
-        (scoreSimilarity * 0.7) + (scoreConfidence * 0.3)
-    );
-
-    let feedback = "";
-
-    if (finalScore >= 95) feedback = "🟢 Excelente";
-    else if (finalScore >= 85) feedback = "🟢 Muito boa";
-    else if (finalScore >= 70) feedback = "🟡 Compreensível";
-    else if (finalScore >= 50) feedback = "🟠 Ajuste a pronúncia";
-    else feedback = "🔴 Tente novamente";
-
-    document.getElementById("result").innerHTML =
-        feedback + "<br>" +
-        finalScore + "% de precisão";
+function loadState() {
+  const s = localStorage.getItem("echo_state");
+  if (s) {
+    const parsed = JSON.parse(s);
+    dIndex = parsed.dIndex ?? 0;
+    fIndex = parsed.fIndex ?? 0;
+  }
 }
 
-// 🔤 Normalizar texto (remove espaços e acentos simples)
-function normalize(text) {
-    return text
-        .toLowerCase()
-        .replace(/\s/g, '')
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, '');
+// ==============================
+// RENDER
+// ==============================
+function render() {
+  const frases = getFrasesDoDia();
+  if (!frases.length) return;
+
+  if (fIndex >= frases.length) fIndex = 0;
+
+  const frase = frases[fIndex];
+
+  document.getElementById("dayTitle").innerText = "Dia " + frase.d;
+  document.getElementById("trad").innerText = frase.t;
+  document.getElementById("simp").innerText = frase.p;
+  document.getElementById("br").innerText = frase.br;
+  document.getElementById("pt").innerText = frase.pt;
+
+  clearFeedback(); // 🔥 limpa sempre ao renderizar
+  saveState();
 }
 
-// 📐 Similaridade (Levenshtein)
+// ==============================
+// NAVEGAÇÃO DIA
+// ==============================
+document.getElementById("prevDay").onclick = () => {
+  if (dIndex > 0) {
+    dIndex--;
+    fIndex = 0;
+    clearFeedback();
+    render();
+  }
+};
+
+document.getElementById("nextDay").onclick = () => {
+  if (dIndex < dias.length - 1) {
+    dIndex++;
+    fIndex = 0;
+    clearFeedback();
+    render();
+  }
+};
+
+// ==============================
+// NAVEGAÇÃO FRASE
+// ==============================
+document.getElementById("prevPhrase").onclick = () => {
+  if (fIndex > 0) {
+    fIndex--;
+    clearFeedback();
+    render();
+  }
+};
+
+document.getElementById("nextPhrase").onclick = () => {
+  const frases = getFrasesDoDia();
+  if (fIndex < frases.length - 1) {
+    fIndex++;
+    clearFeedback();
+    render();
+  }
+};
+
+// ==============================
+// SPEAK (Mandarim Taiwan)
+// ==============================
+function speak(text) {
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "zh-TW";
+  utter.rate = 0.9;
+  speechSynthesis.speak(utter);
+}
+
+document.getElementById("playBtn").onclick = () => {
+  clearFeedback(); // 🔥 limpa antes de ouvir novamente
+  const frases = getFrasesDoDia();
+  speak(frases[fIndex].t);
+};
+
+// ==============================
+// RECONHECIMENTO
+// ==============================
+let rec;
+
+if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  rec = new SpeechRecognition();
+  rec.lang = "zh-TW";
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+
+  rec.onstart = () => {
+    clearFeedback();
+    document.getElementById("feedback").innerText = "🎤 Ouvindo...";
+  };
+
+  rec.onresult = (e) => {
+    const spoken = e.results[0][0].transcript.trim();
+    evaluate(spoken);
+  };
+
+  rec.onerror = () => {
+    document.getElementById("feedback").innerText =
+      "Erro no reconhecimento. Tente novamente.";
+  };
+}
+
+document.getElementById("recBtn").onclick = () => {
+  if (!rec) {
+    alert("Reconhecimento de voz não suportado.");
+    return;
+  }
+
+  clearFeedback(); // 🔥 limpa imediatamente ao apertar
+  rec.start();
+};
+
+// ==============================
+// SIMILARIDADE
+// ==============================
 function similarity(a, b) {
-    const distance = levenshtein(a, b);
-    const maxLen = Math.max(a.length, b.length);
-    if (maxLen === 0) return 100;
-    return Math.round((1 - distance / maxLen) * 100);
+  a = a.replace(/\s/g, "");
+  b = b.replace(/\s/g, "");
+
+  let matches = 0;
+  const len = Math.max(a.length, b.length);
+
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    if (a[i] === b[i]) matches++;
+  }
+
+  return Math.round((matches / len) * 100);
 }
 
-function levenshtein(a, b) {
-    const matrix = [];
+// ==============================
+// AVALIAÇÃO
+// ==============================
+function evaluate(spoken) {
+  const frases = getFrasesDoDia();
+  const expected = frases[fIndex].t;
+  const score = similarity(spoken, expected);
 
-    for (let i = 0; i <= b.length; i++) {
-        matrix[i] = [i];
-    }
+  let msg = "";
 
-    for (let j = 0; j <= a.length; j++) {
-        matrix[0][j] = j;
-    }
+  if (score === 100) msg = "🎉 Perfeito! 100% correto!";
+  else if (score >= 80) msg = "👏 Muito bom! " + score + "%";
+  else if (score >= 60) msg = "🙂 Quase lá! " + score + "%";
+  else msg = "🔁 Tente novamente! " + score + "%";
 
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            if (b[i - 1] === a[j - 1]) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1,
-                    matrix[i][j - 1] + 1,
-                    matrix[i - 1][j] + 1
-                );
-            }
-        }
-    }
-
-    return matrix[b.length][a.length];
+  document.getElementById("feedback").innerText = msg;
 }
 
-// ⏭ Próxima palavra
-function next() {
-    if (!data.length) return;
-
-    index = (index + 1) % data.length;
-    load();
-}
-
-// 🔧 Registrar Service Worker (PWA)
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js")
-        .catch(err => console.log("Erro SW:", err));
-    });
-}
+// ==============================
+loadDB();

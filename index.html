@@ -1,41 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EchoWebSpeech</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EchoWebSpeech</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#111111" />
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --card: #f4f4f4;
+      --text: #111111;
+      --accent: #2563eb;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111111;
+        --card: #1e1e1e;
+        --text: #ffffff;
+        --accent: #3b82f6;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .day-nav,
+    .phrase-nav {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    #card {
+      background: var(--card);
+      padding: 25px;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    #trad {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    #simp {
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
+    #br {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    #pt {
+      font-size: 16px;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+    #feedback {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      min-height: 24px;
+      text-align: center;
+    }
+
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 15px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-<h1>EchoWebSpeech</h1>
-</header>
+  <h1>EchoWebSpeech</h1>
 
-<main>
-<h2 id="dayTitle"></h2>
+  <!-- Navegação de Dia -->
+  <div class="day-nav">
+    <button id="prevDay">⏮️</button>
+    <span id="dayTitle"></span>
+    <button id="nextDay">⏭️</button>
+  </div>
 
-<div id="card">
-<div id="chinese"></div>
-<div id="br"></div>
-<div id="pt"></div>
-</div>
+  <!-- Card Principal -->
+  <div id="card">
+    <div id="trad"></div>
+    <div id="simp"></div>
+    <div id="br"></div>
+    <div id="pt"></div>
+  </div>
 
-<div class="buttons">
-<button onclick="speak()">▶ Ouvir</button>
-<button onclick="listen()">🎤 Falar</button>
-<button onclick="next()">Próxima</button>
-</div>
+  <!-- Navegação de Frase -->
+  <div class="phrase-nav">
+    <button id="prevPhrase">⬅️</button>
+    <button id="nextPhrase">➡️</button>
+  </div>
 
-<div id="result"></div>
+  <!-- Controles -->
+  <div class="controls">
+    <button id="playBtn">🔊 Ouvir</button>
+    <button id="recBtn">🎤 Falar</button>
+  </div>
 
-</main>
+  <div id="feedback"></div>
 
-<script src="app.js"></script>
+  <!-- Script principal -->
+  <script src="app.js" defer></script>
+
+  <!-- Registro do Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .catch(err => console.log("SW erro:", err));
+    }
+  </script>
+
 </body>
 </html>
