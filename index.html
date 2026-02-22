@@ -443,6 +443,40 @@ footer svg {
   margin-bottom: 15px;
 }
 
+    /* Banner discreto de compatibilidade (aparece quando alguma API está ausente) */
+    #compat-banner {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      max-width: 260px;
+      line-height: 1;
+    }
+
+    #compat-banner .compat-close {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 6px;
+    }
+
+    #compat-banner .compat-close:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
 #translate-btn {
   background: var(--accent);
   color: white;
@@ -598,6 +632,12 @@ footer svg {
     </div>
 
     <div id="feedback"></div>
+
+    <!-- Banner discreto de compatibilidade (inserido pelo app.js) -->
+    <div id="compat-banner" role="status" aria-live="polite">
+      <span id="compat-text"></span>
+      <button class="compat-close" id="compat-close" aria-label="Fechar">✕</button>
+    </div>
 
     <div id="rate-control">
       <label for="rate">Velocidade:</label>

@@ -1,23 +1,21 @@
-# 🎙️ EchoWebSpeech
+# 🎙️ Echo Web Speech
 
-EchoWebSpeech é um aplicativo web progressivo (PWA) para treino de pronúncia utilizando a Web Speech API.
+Echo Web Speech é um aplicativo web progressivo (PWA) para treino de pronúncia utilizando a Web Speech API.
 
 Permite:
 - 🔊 Ouvir palavras no idioma selecionado
 - 🎤 Repetir usando o microfone
 - 📊 Receber avaliação percentual da pronúncia
-- 🌙 Alternar entre modo claro / escuro / sistema
-- 🎧 Usar modo somente áudio
 - 📱 Instalar como aplicativo
 - 📴 Funcionar offline
 
-Atualmente configurado para Mandarim (zh-TW), com arquitetura preparada para múltiplos idiomas.
+Atualmente configurado para Mandarim (zh-TW).
 
 ---
 
 # 🚀 Como usar
 
-1. Acesse a página publicada no GitHub Pages
+1. Acesse a página publicada no [GitHub Pages](https://vanaware.github.io/EchoWebSpeech/)
 2. Instale como aplicativo (opcional)
 3. Permita acesso ao microfone
 4. Clique em ▶ Ouvir
@@ -161,11 +159,8 @@ Depois:
 
 - ✔ Avaliação percentual de pronúncia
 - ✔ Feedback qualitativo por faixa de desempenho
-- ✔ Modo somente áudio
-- ✔ Dark mode (manual ou automático)
 - ✔ PWA instalável
 - ✔ Cache offline
-- ✔ Arquitetura preparada para múltiplos idiomas
 
 ---
 
@@ -176,15 +171,37 @@ Depois:
 - A avaliação é baseada em similaridade textual
 - Tons do mandarim são avaliados indiretamente pelo reconhecimento
 
+## ✅ Compatibilidade do navegador e como verificar
+
+- Recomendado: Google Chrome (desktop, Android, ChromeOS) atualizado.
+- O app usa duas APIs do navegador: `speechSynthesis` (síntese/voz) e `SpeechRecognition` (reconhecimento). Se alguma delas não estiver disponível, o app mostra uma mensagem de feedback explicando que o navegador não é compatível.
+
+- Como testar rápido no próprio navegador:
+   1. Abra a página do EchoWebSpeech.
+   2. Tente clicar em **▶ Ouvir** — se `speechSynthesis` estiver indisponível verá mensagem no campo de feedback.
+   3. Tente clicar em **🎤 Falar** — se `SpeechRecognition` estiver indisponível verá um alerta ou mensagem de feedback.
+
+- Como checar via Console (opcional, para usuários avançados): abra DevTools (F12) → Console e cole:
+
+```javascript
+console.log('speechSynthesis:', !!(window.speechSynthesis && window.SpeechSynthesisUtterance));
+console.log('SpeechRecognition:', !!(window.SpeechRecognition || window.webkitSpeechRecognition));
+```
+
+Se o primeiro for `true`, a síntese de voz está disponível; se o segundo for `true`, o reconhecimento está disponível.
+
+### O que fazer se não estiver disponível
+- Atualize o Chrome para a versão mais recente (desktop/Android/ChromeOS).
+- Em Android, instale/ative o pacote de reconhecimento por voz em Mandarim (veja seção Android abaixo).
+- Em alguns dispositivos (especialmente Safari / iOS) a Web Speech API tem suporte limitado — use Chrome quando possível.
+
 ---
 
 # 🔮 Próximas versões
 
+- Melhor conjunto de Frases
 - Suporte a múltiplos idiomas
-- Histórico de progresso
-- Estatísticas de desempenho
-- Sistema de níveis
-- Modo treino avançado
+
 
 ---
 

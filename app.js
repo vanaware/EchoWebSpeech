@@ -6,6 +6,8 @@ let dias = [];
 let dIndex = 0;
 let fIndex = 0;
 let isFreeMode = true; // Inicia em modo livre (Dia 0)
+let synthesisSupported = true;
+let compatBannerDismissed = false;
 
 // ==============================
 // CARREGAR BASE
@@ -349,11 +351,14 @@ document.getElementById("nextPhrase").onclick = () => {
 // ==============================
 function speak(text) {
   if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    synthesisSupported = false;
     document.getElementById("playBtn").disabled = true;
     console.warn("SpeechSynthesis API não suportada neste navegador.");
     document.getElementById("feedback").innerText = "🔊 API de síntese de voz (speechSynthesis) não disponível neste navegador. Use um navegador compatível.";
+    updateCompatBanner();
     return;
   } else {
+    synthesisSupported = true;
     document.getElementById("playBtn").disabled = false;
   }
 
@@ -429,6 +434,47 @@ else {
   console.warn("SpeechRecognition API não suportada neste navegador.");
   document.getElementById("feedback").innerText = "Reconhecimento de voz não suportado neste navegador. Seu navegador não é compatível com a API SpeechRecognition.";
 }
+
+// Atualiza e controla o banner discreto de compatibilidade
+function updateCompatBanner() {
+  if (compatBannerDismissed) return;
+
+  const banner = document.getElementById("compat-banner");
+  const text = document.getElementById("compat-text");
+  if (!banner || !text) return;
+
+  const missing = [];
+  if (!synthesisSupported && !("speechSynthesis" in window)) missing.push("síntese de voz");
+  if (!recognitionSupported && !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) missing.push("reconhecimento de voz");
+
+  if (missing.length === 0) {
+    banner.style.display = "none";
+    return;
+  }
+
+  const msg = "APIs ausentes: " + missing.join(" e ") + ". Use um navegador compatível (Chrome recomendado).";
+  text.innerText = msg;
+  banner.style.display = "flex";
+}
+
+// Fechar banner
+const compatCloseBtn = document.getElementById("compat-close");
+if (compatCloseBtn) {
+  compatCloseBtn.addEventListener("click", () => {
+    const banner = document.getElementById("compat-banner");
+    if (banner) banner.style.display = "none";
+    compatBannerDismissed = true;
+  });
+}
+
+// Inicializar flags e banner ao carregar
+window.addEventListener("load", () => {
+  // Inicializa synthesisSupported com checagem imediata
+  synthesisSupported = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+  // recognitionSupported já definido mais acima, atualizar caso necessário
+  recognitionSupported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  updateCompatBanner();
+});
 
 document.getElementById("recBtn").onclick = () => {
   if (isFreeMode) {
