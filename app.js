@@ -17,6 +17,7 @@ async function loadDB() {
     dias = [...new Set(db.map(item => item.d))].sort((a, b) => a - b);
 
     loadState();
+    renderPhrasesToSidebar();
     render();
   } catch (err) {
     console.error("Erro ao carregar base:", err);
@@ -33,6 +34,105 @@ function getFrasesDoDia() {
 
 function clearFeedback() {
   document.getElementById("feedback").innerText = "";
+}
+
+function closeSidebar() {
+  // Só fecha a sidebar em telas pequenas
+  if (window.innerWidth <= 768) {
+    document.getElementById("sidebar").classList.remove("open");
+  }
+}
+
+// ==============================
+// RENDERIZAR FRASES DO DIA
+// ==============================
+function renderPhrasesToSidebar() {
+  const phraseList = document.getElementById("phraseList");
+  phraseList.innerHTML = "";
+
+  const diaAtual = dias[dIndex];
+  document.getElementById("sidebarDay").innerText = diaAtual;
+
+  const frases = db.filter(item => item.d === diaAtual);
+
+  frases.forEach((frase, idx) => {
+    const li = document.createElement("li");
+    li.className = "sidebar-item";
+    if (idx === fIndex) li.classList.add("active");
+    li.innerText = frase.pt;
+
+    li.onclick = () => {
+      fIndex = idx;
+      render();
+      closeSidebar();
+    };
+
+    phraseList.appendChild(li);
+  });
+}
+
+// ==============================
+// RENDERIZAR TODAS AS FRASES COM FILTRO
+// ==============================
+function renderAllPhrasesInSidebar(searchTerm = "") {
+  const allPhrasesList = document.getElementById("allPhrasesList");
+  allPhrasesList.innerHTML = "";
+
+  let filteredDB = db;
+  
+  // Filtrar por termo de pesquisa (case-insensitive)
+  if (searchTerm.trim()) {
+    const lowerSearch = searchTerm.toLowerCase();
+    filteredDB = db.filter(item => 
+      item.pt.toLowerCase().includes(lowerSearch) ||
+      item.t.toLowerCase().includes(lowerSearch) ||
+      item.p.toLowerCase().includes(lowerSearch)
+    );
+  }
+
+  // Agrupar por dia para melhor visualização
+  let currentDay = null;
+  let dayLabel = null;
+
+  filteredDB.forEach((frase) => {
+    // Se mudou de dia, criar label
+    if (frase.d !== currentDay) {
+      currentDay = frase.d;
+      dayLabel = document.createElement("li");
+      dayLabel.className = "sidebar-day-separator";
+      dayLabel.innerText = "Dia " + currentDay;
+      allPhrasesList.appendChild(dayLabel);
+    }
+
+    const li = document.createElement("li");
+    li.className = "sidebar-item";
+    
+    // Verifica se é a frase atual
+    if (frase.d === dias[dIndex]) {
+      const frasesDoDay = db.filter(item => item.d === frase.d);
+      const fraseAtual = frasesDoDay[fIndex];
+      if (fraseAtual && fraseAtual.t === frase.t) {
+        li.classList.add("active");
+      }
+    }
+    
+    li.innerText = frase.pt;
+
+    li.onclick = () => {
+      // Encontrar o índice do dia
+      const dayIndex = dias.indexOf(frase.d);
+      if (dayIndex !== -1) {
+        dIndex = dayIndex;
+        // Encontrar a frase dentro do dia
+        const frasesDoDay = db.filter(item => item.d === frase.d);
+        fIndex = frasesDoDay.findIndex(f => f.t === frase.t);
+        render();
+        closeSidebar();
+      }
+    };
+
+    allPhrasesList.appendChild(li);
+  });
 }
 
 // ==============================
@@ -71,9 +171,37 @@ function render() {
   document.getElementById("br").innerText = frase.br;
   document.getElementById("pt").innerText = frase.pt;
 
+  renderPhrasesToSidebar();
+  renderAllPhrasesInSidebar(document.getElementById("searchBox").value);
   clearFeedback(); // 🔥 limpa sempre ao renderizar
   saveState();
 }
+
+// ==============================
+// SEARCH BOX
+// ==============================
+document.getElementById("searchBox").addEventListener("input", (e) => {
+  renderAllPhrasesInSidebar(e.target.value);
+});
+
+// ==============================
+// MENU TOGGLE
+// ==============================
+document.getElementById("menuToggle").onclick = () => {
+  document.getElementById("sidebar").classList.toggle("open");
+};
+
+// Fechar sidebar ao clicar fora (apenas em telas pequenas)
+document.addEventListener("click", (e) => {
+  const sidebar = document.getElementById("sidebar");
+  const menuToggle = document.getElementById("menuToggle");
+
+  if (window.innerWidth <= 768) {
+    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains("open")) {
+      closeSidebar();
+    }
+  }
+});
 
 // ==============================
 // NAVEGAÇÃO DIA
