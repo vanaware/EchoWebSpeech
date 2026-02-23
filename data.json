@@ -28,6 +28,7 @@
   { "d": 5, "t": "可以幫我嗎？", "p": "ke yi bang wo ma", "br": "kâ i bang uô ma", "pt": "Pode me ajudar?" },
   { "d": 5, "t": "請說慢一點", "p": "qing shuo man yi dian", "br": "tching shuô man i dien", "pt": "Fale mais devagar" },
   { "d": 5, "t": "可以再說一次嗎？", "p": "ke yi zai shuo yi ci ma", "br": "kâ i zai shuô i tsâ ma", "pt": "Pode repetir?" },
+{ "d": 5, "t": "你會說英文嗎？", "p": "ni hui shuo ying wen ma", "br": "ni rruei shuô ying uen ma", "pt": "Você fala inglês?" },
 
   { "d": 6, "t": "左邊", "p": "zuo bian", "br": "dzô bien", "pt": "Esquerda" },
   { "d": 6, "t": "右邊", "p": "you bian", "br": "iou bien", "pt": "Direita" },
