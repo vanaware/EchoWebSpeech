@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karaoke: Huan Le Nian Hua</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        karaoke: {
+                            bg: '#0f172a',
+                            panel: '#1e293b',
+                            highlight: '#10b981', // Emerald green
+                            pinyin: '#f8fafc', // White/very light gray for main text
+                            en: '#94a3b8' // Slate gray for translation
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        /* Lyric line transitions */
+        .lyric-line {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .active-lyric {
+            transform: scale(1.02);
+            border-left-width: 6px;
+            border-left-color: #10b981;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .active-lyric .pinyin-text {
+            color: #10b981;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-karaoke-bg text-white h-screen flex flex-col font-sans overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-black/40 p-4 shadow-md flex justify-between items-center shrink-0">
+        <div>
+            <h1 class="text-2xl font-bold text-karaoke-highlight flex items-center gap-2">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                Karaoke Studio
+            </h1>
+            <p class="text-sm text-gray-400">Huan Le Nian Hua - Pinyin Edition</p>
+        </div>
+        <div class="hidden sm:block text-sm text-gray-400 bg-white/10 px-3 py-1 rounded-full">
+            💡 Tip: Click on a line to highlight it while singing
+        </div>
+    </header>
+
+    <!-- Main Area (Video + Lyrics) -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Video Panel -->
+        <section class="w-full md:w-1/2 lg:w-7/12 bg-black flex flex-col shrink-0">
+            <!-- Responsive container for 16:9 YouTube iframe -->
+            <div class="relative w-full" style="padding-top: 56.25%;">
+                <iframe 
+                    class="absolute top-0 left-0 w-full h-full"
+                    src="https://www.youtube.com/embed/EWEKB9Hx_CA?autoplay=0" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="p-4 md:p-8 flex-1 flex flex-col justify-center items-center text-center bg-gradient-to-b from-black to-karaoke-bg hidden md:flex">
+                <h2 class="text-3xl font-bold text-white mb-2 tracking-wide">Huan Le Nian Hua</h2>
+                <p class="text-karaoke-en text-lg">Follow the Pinyin and sing along!</p>
+            </div>
+        </section>
+
+        <!-- Lyrics Panel -->
+        <section class="w-full md:w-1/2 lg:w-5/12 bg-karaoke-panel overflow-y-auto flex flex-col h-full relative" id="lyrics-container">
+            <!-- Mobile tip -->
+            <div class="md:hidden sticky top-0 bg-karaoke-panel/95 backdrop-blur z-10 p-2 text-center text-xs text-karaoke-highlight border-b border-white/10">
+                Tap a line to highlight it as you sing
+            </div>
+
+            <div class="p-4 md:p-6 pb-24" id="lyrics-list">
+                <!-- Lyrics will be injected here by JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Lyrics Data: Pinyin and English Translation
+        const lyricsData = [
+            { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends" },
+            { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands" },
+            { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times" },
+            { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart" },
+            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
+            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
+            { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
+            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya" },
+            { pinyin: "Yào bǎwò", en: "We must seize it" },
+            
+            // Common repetition
+            { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends" },
+            { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands" },
+            { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times" },
+            { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart" },
+            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
+            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
+            { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
+            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya" },
+            { pinyin: "Yào bǎwò", en: "We must seize it" }
+        ];
+
+        const lyricsList = document.getElementById('lyrics-list');
+        let activeIndex = -1;
+
+        // Function to render the lyrics
+        function renderLyrics() {
+            lyricsList.innerHTML = ''; 
+            
+            lyricsData.forEach((line, index) => {
+                const block = document.createElement('div');
+                block.className = 'lyric-line cursor-pointer p-4 md:p-5 mb-3 rounded-r-lg border-l-4 border-transparent hover:bg-white/5';
+                
+                block.onclick = () => highlightLine(index);
+                block.id = `lyric-${index}`;
+
+                block.innerHTML = `
+                    <div class="pinyin-text text-2xl md:text-3xl font-semibold text-karaoke-pinyin mb-2 tracking-wide">${line.pinyin}</div>
+                    <div class="text-karaoke-en text-sm md:text-base italic">${line.en}</div>
+                `;
+                
+                lyricsList.appendChild(block);
+            });
+        }
+
+        // Function to update visual highlight
+        function highlightLine(index) {
+            if (activeIndex !== -1) {
+                const prevBlock = document.getElementById(`lyric-${activeIndex}`);
+                if(prevBlock) prevBlock.classList.remove('active-lyric');
+            }
+
+            activeIndex = index;
+            const currentBlock = document.getElementById(`lyric-${activeIndex}`);
+            
+            if(currentBlock) {
+                currentBlock.classList.add('active-lyric');
+                
+                // Smooth scroll to keep the active line visible in the center
+                currentBlock.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLyrics();
+        });
+    </script>
+</body>
+</html>
