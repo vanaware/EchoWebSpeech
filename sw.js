@@ -11,7 +11,11 @@ const ASSETS = [
   "./apple-touch-icon.png",
   "./favicon.ico",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./music/",
+  "./music/music.mp3",
+  "./music/music.mp4",
+  "./music/index.html"
 ];
 
 // Instalação

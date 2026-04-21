@@ -80,16 +80,20 @@
         
         <!-- Video Panel -->
         <section class="w-full md:w-1/2 lg:w-7/12 bg-black flex flex-col shrink-0">
-            <!-- Responsive container for 16:9 YouTube iframe -->
-            <div class="relative w-full" style="padding-top: 56.25%;">
-                <iframe 
-                    class="absolute top-0 left-0 w-full h-full"
-                    src="https://www.youtube.com/embed/EWEKB9Hx_CA?autoplay=0" 
-                    title="YouTube video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
+            <!-- Native HTML5 player with selector -->
+            <div class="flex flex-col items-center justify-center p-4 gap-4">
+                <div class="flex gap-2 mb-2">
+                    <button id="videoBtn" class="px-4 py-2 rounded bg-karaoke-highlight text-black font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400">Vídeo</button>
+                    <button id="audioBtn" class="px-4 py-2 rounded bg-gray-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400">Áudio</button>
+                </div>
+                <video id="videoPlayer" class="w-full max-w-2xl rounded-lg shadow-lg bg-black" controls>
+                    <source src="music.mp4" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+                <audio id="audioPlayer" class="w-full max-w-2xl rounded-lg shadow-lg bg-black hidden" controls>
+                    <source src="music.mp3" type="audio/mpeg">
+                    Seu navegador não suporta o elemento de áudio.
+                </audio>
             </div>
             <div class="p-4 md:p-8 flex-1 flex flex-col justify-center items-center text-center bg-gradient-to-b from-black to-karaoke-bg hidden md:flex">
                 <h2 class="text-3xl font-bold text-white mb-2 tracking-wide">Huan Le Nian Hua</h2>
@@ -112,6 +116,32 @@
     </main>
 
     <script>
+        // Player toggle logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoBtn = document.getElementById('videoBtn');
+            const audioBtn = document.getElementById('audioBtn');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            videoBtn.addEventListener('click', () => {
+                videoPlayer.classList.remove('hidden');
+                audioPlayer.classList.add('hidden');
+                videoBtn.classList.add('bg-karaoke-highlight', 'text-black');
+                videoBtn.classList.remove('bg-gray-700', 'text-white');
+                audioBtn.classList.remove('bg-karaoke-highlight', 'text-black');
+                audioBtn.classList.add('bg-gray-700', 'text-white');
+                audioPlayer.pause();
+            });
+            audioBtn.addEventListener('click', () => {
+                videoPlayer.classList.add('hidden');
+                audioPlayer.classList.remove('hidden');
+                audioBtn.classList.add('bg-karaoke-highlight', 'text-black');
+                audioBtn.classList.remove('bg-gray-700', 'text-white');
+                videoBtn.classList.remove('bg-karaoke-highlight', 'text-black');
+                videoBtn.classList.add('bg-gray-700', 'text-white');
+                videoPlayer.pause();
+            });
+        });
         // Lyrics Data: Pinyin and English Translation
         const lyricsData = [
             { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends" },
@@ -129,6 +159,13 @@
             { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands" },
             { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times" },
             { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart" },
+            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
+            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
+            { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
+            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya" },
+            { pinyin: "Yào bǎwò", en: "We must seize it" }
+            ,
+            // Refrão final repetido
             { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
             { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
             { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
