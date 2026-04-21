@@ -144,33 +144,32 @@
         });
         // Lyrics Data: Pinyin and English Translation
         const lyricsData = [
-            { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends" },
-            { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands" },
-            { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times" },
-            { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart" },
-            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
-            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
-            { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
-            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya" },
-            { pinyin: "Yào bǎwò", en: "We must seize it" },
-            
+            // Os tempos abaixo são exemplos aproximados em segundos. Ajuste conforme necessário para melhor sincronização.
+            { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends", time: 19 },
+            { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands", time: 21 }, 
+            { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times", time: 25 }, 
+            { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart", time: 29 }, 
+            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth", time: 33 }, 
+            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment", time: 36 },
+            { pinyin: "Shíguāng cōngcōng", en: "Time flies by", time: 39 }, 
+            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya", time: 42 },
+            { pinyin: "Yào bǎwò", en: "We must seize it", time: 46 },
             // Common repetition
-            { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends" },
-            { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands" },
-            { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times" },
-            { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart" },
-            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
-            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
-            { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
-            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya" },
-            { pinyin: "Yào bǎwò", en: "We must seize it" }
-            ,
+            { pinyin: "Wǒmen dōu shì hǎo péngyǒu", en: "We are all good friends", time: 63 },
+            { pinyin: "Ràng wǒmen lái qiānzhe shǒu", en: "Let us hold hands", time: 65 },
+            { pinyin: "Měihǎo shíguāng mò cuòguò", en: "Don't miss the good times", time: 69 },
+            { pinyin: "Liú zhù huānxiào zài xīntóu", en: "Keep the laughter in your heart", time: 73 },
+            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth", time: 77 },
+            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment", time: 80 },
+            { pinyin: "Shíguāng cōngcōng", en: "Time flies by", time: 83 },
+            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya", time: 86 },
+            { pinyin: "Yào bǎwò", en: "We must seize it", time: 89 },
             // Refrão final repetido
-            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth" },
-            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment" },
-            { pinyin: "Shíguāng cōngcōng", en: "Time flies by" },
-            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya" },
-            { pinyin: "Yào bǎwò", en: "We must seize it" }
+            { pinyin: "Huānlè niánhuá", en: "Happy years / Joyful youth", time: 106 },
+            { pinyin: "Yīkè bù tíngliú", en: "Does not stop for a moment", time: 109 },
+            { pinyin: "Shíguāng cōngcōng", en: "Time flies by", time: 112 },
+            { pinyin: "Āiyā yā yā yā", en: "Ai ya ya ya ya", time: 116 },
+            { pinyin: "Yào bǎwò", en: "We must seize it", time: 120 }
         ];
 
         const lyricsList = document.getElementById('lyrics-list');
@@ -196,30 +195,48 @@
             });
         }
 
-        // Function to update visual highlight
+        // Função para destacar linha
         function highlightLine(index) {
             if (activeIndex !== -1) {
                 const prevBlock = document.getElementById(`lyric-${activeIndex}`);
                 if(prevBlock) prevBlock.classList.remove('active-lyric');
             }
-
             activeIndex = index;
             const currentBlock = document.getElementById(`lyric-${activeIndex}`);
-            
             if(currentBlock) {
                 currentBlock.classList.add('active-lyric');
-                
-                // Smooth scroll to keep the active line visible in the center
-                currentBlock.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
+                currentBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
-        // Initialize
+        // Sincronização automática com o player
+        function setupLyricSync(player) {
+            let lastIndex = -1;
+            player.addEventListener('timeupdate', () => {
+                const currentTime = player.currentTime;
+                // Encontrar o último índice cujo tempo é menor ou igual ao tempo atual
+                let idx = lyricsData.length - 1;
+                for (let i = 0; i < lyricsData.length; i++) {
+                    if (currentTime < lyricsData[i].time) {
+                        idx = i - 1;
+                        break;
+                    }
+                }
+                if (idx !== lastIndex && idx >= 0) {
+                    highlightLine(idx);
+                    lastIndex = idx;
+                }
+            });
+        }
+
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             renderLyrics();
+            // Sincroniza com o player ativo (vídeo ou áudio)
+            const videoPlayer = document.getElementById('videoPlayer');
+            const audioPlayer = document.getElementById('audioPlayer');
+            setupLyricSync(videoPlayer);
+            setupLyricSync(audioPlayer);
         });
     </script>
 </body>
